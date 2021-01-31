@@ -1,8 +1,14 @@
 const api_key = config.API_KEY;
 const output = document.querySelector(".output");
-// const searchTerm = document.querySelector("input");
 const btn = document.querySelector("button");
-// searchTerm.setAttribute("value", "test");
+const btnPrev = document.createElement("button");
+btnPrev.setAttribute("disabled", true);
+btnPrev.textContent = "Back";
+output.appendChild(btnPrev);
+const btnNext = document.createElement("button");
+btnNext.setAttribute("disabled", true);
+btnNext.textContent = "Next";
+output.appendChild(btnNext);
 btn.addEventListener("click", ySearch);
 
 function ySearch(e) {
@@ -16,12 +22,21 @@ function ySearch(e) {
     "&q=" +
     search +
     "&maxResults=20";
-  document.querySelector(".output").textContent = url;
   fetch(url)
     .then((resp) => resp.json())
     .then(function (data) {
-      show(data.items);
-    });
+      return data.items.map(function (x) {
+        return {
+          title: x.snippet.title,
+          des: x.snippet.description,
+          img: x.snippet.thumbnails.default.url,
+          id: x.id.videoId,
+          x: x,
+        };
+      });
+    })
+    .then((arr) => show(arr))
+    .catch((error) => console.log(error));
 }
 
 function show(data) {
@@ -31,17 +46,17 @@ function show(data) {
     console.log(video);
     let div = document.createElement("div");
     div.classList.add("box");
-    let temp = document.createTextNode(video.snippet.description);
-    div.appendChild(temp);
+    let temp = document.createTextNode(video.des);
     let span = document.createElement("span");
     span.innerHTML =
       '<a href="http://www.youtube.com/watch?v=' +
-      video.id.videoId +
+      video.id +
       '"target="_blank">' +
-      video.snippet.title +
+      video.title +
       "</a>";
     console.log(span.innerHTML);
     div.appendChild(span);
+    div.appendChild(temp);
     output.appendChild(div);
   });
 }
