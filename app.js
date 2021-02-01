@@ -1,30 +1,48 @@
 const api_key = config.API_KEY;
 const output = document.querySelector(".output");
-const btn = document.querySelector("button");
+const searchTerm = document.querySelector("input");
+searchTerm.setAttribute("value", "test");
 const btnPrev = document.createElement("button");
 btnPrev.setAttribute("disabled", true);
 btnPrev.textContent = "Back";
-output.appendChild(btnPrev);
+document.body.appendChild(btnPrev);
 const btnNext = document.createElement("button");
 btnNext.setAttribute("disabled", true);
 btnNext.textContent = "Next";
-output.appendChild(btnNext);
-btn.addEventListener("click", ySearch);
+document.body.appendChild(btnNext);
+const btns = document.querySelectorAll("button");
+btns.forEach((btn) => btn.addEventListener("click", ySearch));
 
 function ySearch(e) {
-  const searchTerm = document.querySelector("input");
-  searchTerm.setAttribute("value", "test");
   let search = searchTerm.value;
+  console.log(e.target.token);
   search = encodeURIComponent(search);
-  const url =
+  let url =
     "https://www.googleapis.com/youtube/v3/search/?part=snippet&key=" +
     api_key +
     "&q=" +
     search +
-    "&maxResults=20";
+    "&maxResults=4";
+  if (e.target.token) {
+    url += "&pageToken" + e.target.token;
+  }
   fetch(url)
     .then((resp) => resp.json())
     .then(function (data) {
+      if (data.prevPageToken) {
+        btnPrev.token = data.prevPageToken;
+        btnPrev.disabled = false;
+      } else {
+        btnPrev.token = false;
+        btnPrev.disablet = true;
+      }
+      if (data.nextPageToken) {
+        btnNext.token = data.nextPageToken;
+        btnNext.disabled = false;
+      } else {
+        btnNext.token = false;
+        btnNext.disabled = true;
+      }
       return data.items.map(function (x) {
         return {
           title: x.snippet.title,
@@ -35,13 +53,18 @@ function ySearch(e) {
         };
       });
     })
-    .then((arr) => show(arr))
-    .catch((error) => console.log(error));
+    .then(function (arr) {
+      show(arr);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 }
 
 function show(data) {
   console.log(data);
   console.log(data.length);
+  // output.innerHTML = "";
   data.forEach(function (video) {
     console.log(video);
     let div = document.createElement("div");
