@@ -24,7 +24,7 @@ function ySearch(e) {
     search +
     "&maxResults=4";
   if (e.target.token) {
-    url += "&pageToken" + e.target.token;
+    url += "&pageToken=" + e.target.token;
   }
   fetch(url)
     .then((resp) => resp.json())
@@ -34,7 +34,7 @@ function ySearch(e) {
         btnPrev.disabled = false;
       } else {
         btnPrev.token = false;
-        btnPrev.disablet = true;
+        btnPrev.disabled = true;
       }
       if (data.nextPageToken) {
         btnNext.token = data.nextPageToken;
@@ -64,7 +64,7 @@ function ySearch(e) {
 function show(data) {
   console.log(data);
   console.log(data.length);
-  // output.innerHTML = "";
+  output.innerHTML = "";
   data.forEach(function (video) {
     console.log(video);
     let div = document.createElement("div");
@@ -74,7 +74,7 @@ function show(data) {
     span.innerHTML =
       '<a href="http://www.youtube.com/watch?v=' +
       video.id +
-      '"target="_blank">' +
+      '" target="_blank">' +
       video.title +
       "</a>";
     console.log(span.innerHTML);
