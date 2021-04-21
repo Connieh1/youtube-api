@@ -1,9 +1,4 @@
-if (config.API_KEY) {
-  const api_key = config.API_KEY;
-} else {
-  const api_key = JS_APP_API_KEY;
-}
-
+let api_key = config.API_KEY || JS_APP_API_KEY;
 const output = document.querySelector(".output");
 const searchTerm = document.querySelector("input");
 searchTerm.setAttribute("value", "test");
