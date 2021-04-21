@@ -1,4 +1,4 @@
-let api_key = config.API_KEY || JS_APP_API_KEY;
+let api_key = config.API_KEY;
 const output = document.querySelector(".output");
 const searchTerm = document.querySelector("input");
 searchTerm.setAttribute("value", "test");
